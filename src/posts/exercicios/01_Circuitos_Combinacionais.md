@@ -30,6 +30,82 @@ order: 1
       Escreva as equações booleanas que representam a ativação/desativação da bomba e da eletroválvula.
    3. Representação do Circuito Lógico
       Utilize **portas lógicas digitais** (**AND, OR, NOT**) para implementar as expressões booleanas obtidas no passo anterior e represente o circuito usando um **diagrama esquemático**.  
+Vamos resolver cada uma das três partes do seu pedido com: tabela-verdade, equações lógicas e diagramas lógicos básicos, conforme necessário.
+
+
+
+
+Entradas:
+
+A = Caixa inferior cheia
+
+B = Caixa inferior vazia
+
+C = Caixa superior cheia
+
+
+(Obs: A e B são mutuamente exclusivos. Consideramos B = 1 implica A = 0.)
+
+Saídas:
+
+Bomba = 1 (ligada), 0 (desligada)
+
+Válvula = 1 (aberta), 0 (fechada)
+
+Tabela-Verdade:
+
+A	B	C	Bomba	Válvula
+
+0	0	0	1	1
+0	0	1	0	1
+0	1	0	0	1
+0	1	1	0	1
+1	0	0	1	0
+1	0	1	0	0
+1	1	0	0	0 (inválido)
+1	1	1	0	0 (inválido)
+
+
+Nota: A combinação A=1 e B=1 não deve ocorrer — sensores mutuamente excludentes.
+
+
+
+
+Expressões Lógicas:
+
+BOMBA: A bomba liga se:
+
+Caixa superior não cheia (¬C)
+
+Caixa inferior não vazia (¬B)
+
+
+Equação da bomba:
+
+BOMBA = ¬C ∧ ¬B
+
+VÁLVULA: A válvula liga se:
+
+Caixa inferior não cheia (¬A)
+
+
+Equação da válvula:
+
+VÁLVULA = ¬A
+
+
+Circuito Lógico:
+
+Bomba:
+
+Entradas B e C passam por NOT.
+
+Saídas desses NOTs vão para uma porta AND → Bomba.
+
+
+Válvula:
+
+Entrada A passa por NOT → controla a válvula.
 
 
 2. **Circuito Lógico para Controle de Máquinas com Prioridade**
@@ -54,12 +130,80 @@ order: 1
     O circuito lógico citado deverá enviar um sinal de nível ALTO para o sistema de acionamento da bomba **sempre que o sinal M estiver em modo automático**, e ocorrer pelo menos um dos seguintes eventos:  
     - A temperatura das placas for inferior a 4 ºC;  
     - A temperatura das placas for superior a 70 ºC;  
-    - A diferença entre ambas for superior a 5 ºC.  
+    - A diferença entre ambas for superior a 5 ºC.
 
+Entradas:
+
+A = Máquina 1
+
+B = Máquina 2
+
+C = Máquina 3
+
+D = Máquina 4
+
+
+Saídas (M1, M2, M3, M4):
+
+Sinais que ligam até 2 máquinas, com prioridade: M1 > M2 > M3 > M4
+
+
+Lógica:
+
+Caso 1: Se A = 1 → M1 liga.
+Caso 2: Se A = 1 e B = 1 → M1 e M2 ligam.
+Caso 3: Se A = 1, B = 1, C = 1 → M1 e M2 ligam.
+Caso 4: Se só C e D = 1 → M3 e M4 ligam.
+Mas só duas devem ser ligadas.
+
+Expressões Lógicas:
+
+Vamos usar sinais de habilitação baseados nas combinações:
+
+M1 = A  
+M2 = B ∧ ¬A  
+M3 = C ∧ ¬A ∧ ¬B  
+M4 = D ∧ ¬A ∧ ¬B ∧ ¬C
+
+Agora limitamos a máximo 2 máquinas ligadas:
+
+Criamos sinais de ativação condicional:
+
+
+M1 = A  
+M2 = B ∧ A  
+M3 = C ∧ ¬A ∧ ¬B  
+M4 = D ∧ ¬A ∧ ¬B ∧ ¬C
+
+E garantimos que apenas M1 & M2 ou M1 & M3, nunca mais de 2.
+
+
+Circuito Lógico:
+
+Use hierarquia com portas AND, NOT, e OR para checar condições em cascata:
+
+M1 = A
+
+M2 = A ∧ B
+
+M3 = ¬A ∧ ¬B ∧ C
+
+M4 = ¬A ∧ ¬B ∧ ¬C ∧ D
+
+
+O sinal M2 depende de M1 já estar ativo; M3 depende de M1 e M2 estarem inativos; e assim por diante.
+
+
+
+
+  condição: bomba liga apenas no modo automatico ( ¬M ) E se A ou B ou C for verdadeiro
+  equação logíca: S =( A + B + C )∧ ¬M
+
+  
    1. Qual é a equação lógica do sinal de saída do circuito lógico?  
 
       A) $ S = A.B.C + \overline{M} $
-      B) $ S = A.B.C.M  $
-      C) $ S = (A + B + C)M  $
-      D) $ S = A + B + C + M  $
-      E) $ S = (A + B + C)\overline{M}  $
+      B) $ S = A.B.C.M  $- errada
+      C) $ S = (A + B + C)M  $- errada
+      D) $ S = A + B + C + M  $ - errada
+      E) $ S = (A + B + C)\overline{M}  $ - correta
